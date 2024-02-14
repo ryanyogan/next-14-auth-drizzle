@@ -5,7 +5,9 @@
 html,
 body,
 :root {
-  height: 100%;
+  @apply font-sans antialiased;
+  @apply h-full;
+  @apply w-full
 }
  
 @layer base {
