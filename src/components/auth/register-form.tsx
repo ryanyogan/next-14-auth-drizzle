@@ -35,7 +35,7 @@ export function RegisterForm() {
     startTransition(() => {
       register(values).then((result) => {
         if (result?.error) {
-          setError(result.error.message);
+          setError(result.error);
         }
 
         if (result?.success) {

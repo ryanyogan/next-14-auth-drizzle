@@ -1,0 +1,13 @@
+{
+  "version": "5",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1707960852445,
+      "tag": "0000_funny_dexter_bennett",
+      "breakpoints": true
+    }
+  ]
+}
