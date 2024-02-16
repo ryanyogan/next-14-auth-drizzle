@@ -4,6 +4,8 @@ import { CardWrapper } from "@/components/auth/card-wrapper";
 import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { login } from "@/actions/login";
+import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { FormError } from "../form-error";
@@ -13,6 +15,10 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 
 export const LoginForm = () => {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -22,7 +28,19 @@ export const LoginForm = () => {
   });
 
   function onSubmit(values: z.infer<typeof LoginSchema>) {
-    console.log(values);
+    setError("");
+    setSuccess("");
+
+    startTransition(() => {
+      login(values)
+        .then((result) => {
+          setError(result.error?.toString());
+          setSuccess(result.success);
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
+    });
   }
 
   return (

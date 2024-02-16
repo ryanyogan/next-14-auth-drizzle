@@ -1,7 +1,7 @@
 "use client";
 
 import { CardWrapper } from "@/components/auth/card-wrapper";
-import { LoginSchema, RegisterSchema } from "@/schemas";
+import { RegisterSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { register } from "@/actions/register";
@@ -20,7 +20,7 @@ export function RegisterForm() {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
-    resolver: zodResolver(LoginSchema),
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -33,15 +33,14 @@ export function RegisterForm() {
     setSuccess("");
 
     startTransition(() => {
-      register(values).then((result) => {
-        if (result?.error) {
+      register(values)
+        .then((result) => {
           setError(result.error);
-        }
-
-        if (result?.success) {
           setSuccess(result.success);
-        }
-      });
+        })
+        .catch((err: any) => {
+          console.log(err);
+        });
     });
   }
 
@@ -62,7 +61,12 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input {...field} type="text" placeholder="John Doe" />
+                    <Input
+                      disabled={isPending}
+                      {...field}
+                      type="text"
+                      placeholder="John Doe"
+                    />
                   </FormControl>
                 </FormItem>
               )}
@@ -76,6 +80,7 @@ export function RegisterForm() {
                   <FormControl>
                     <Input
                       {...field}
+                      disabled={isPending}
                       type="email"
                       placeholder="happy.gillmore@jk.com"
                     />
@@ -90,15 +95,20 @@ export function RegisterForm() {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} type="password" placeholder="********" />
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      type="password"
+                      placeholder="********"
+                    />
                   </FormControl>
                 </FormItem>
               )}
             />
           </div>
-          <FormError message={success} />
-          <FormSuccess message={error} />
-          <Button type="submit" className="w-full">
+          <FormError message={error} />
+          <FormSuccess message={success} />
+          <Button disabled={isPending} type="submit" className="w-full">
             Register
           </Button>
         </form>
